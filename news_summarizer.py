@@ -59,8 +59,8 @@ def summarize(articles: list[dict], client: anthropic.Anthropic) -> str:
         max_tokens=1500,
         messages=[{"role": "user", "content": build_prompt(articles)}],
     )
-    return message.content[0].text
-
+    text_parts = [block.text for block in message.content if block.type == "text"]
+    return "\n".join(text_parts)
 
 def save_summary(summary: str) -> str:
     """要約結果を日付付きファイルとして summaries/ 以下に保存する"""
