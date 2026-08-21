@@ -22,7 +22,7 @@ RSS_FEEDS = {
 }
 
 MAX_ARTICLES_PER_FEED = 5
-MODEL = "claude-sonnet-4-6"
+MODEL = "claude-sonnet-5"
 
 
 def fetch_articles() -> list[dict]:
