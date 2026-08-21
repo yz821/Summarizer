@@ -1,1 +1,35 @@
+name: News Summary
+
+on:
+  schedule:
+    # UTC基準。UTC 22:00 = 日本時間 翌7:00
+    - cron: "0 22 * * *"
+  workflow_dispatch: {}  # 手動実行ボタンも使えるようにする
+
+permissions:
+  contents: write
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements.txt
+
+      - run: python news_summarizer.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit summary
+        run: |
+          git config user.name "news-bot"
+          git config user.email "news-bot@users.noreply.github.com"
+          git add summaries/
+          git diff --cached --quiet || git commit -m "Add summary $(date +%Y-%m-%d)"
+          git push
 
